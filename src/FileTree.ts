@@ -37,5 +37,8 @@ const dfs = async (path: string) => {
 };
 
 export const buildTree = async (path: string) => {
+  if (!fs.existsSync(path)) {
+    return;
+  }
   return await dfs(path);
 };
