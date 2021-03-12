@@ -4,16 +4,23 @@ import { getDirHash, getFileHash } from "./Hash";
 
 const ignoreList: string[] = [".git", "node_modules", ".vscode", ".idea"];
 
-interface FileDirHashTree {
+export interface FileDirHashTree {
+  type: "dir" | "file";
   path: string;
   hash: string;
   children: FileDirHashTree[];
 }
-
-const dfs = async (path: string) => {
+/**
+ *
+ * @param path
+ * @param oPath  用于确定相对路径
+ * @returns
+ */
+const dfs = async (path: string, oPath: string) => {
   if (!fs.lstatSync(path).isDirectory()) {
     const tree: FileDirHashTree = {
-      path,
+      type: "file",
+      path: path.replace(oPath, ""),
       hash: await getFileHash(path),
       children: [],
     };
@@ -27,18 +34,20 @@ const dfs = async (path: string) => {
     if (ignoreList.indexOf(childDir) != -1) {
       continue;
     }
-    children.push(await dfs(Path.join(path, childDir)));
+    children.push(await dfs(Path.join(path, childDir), oPath));
   }
-  return {
-    path,
+  const tree: FileDirHashTree = {
+    type: "dir",
+    path: path.replace(oPath, ""),
     hash: await getDirHash(children.map((x) => x.hash)),
     children,
   };
+  return tree;
 };
 
 export const buildTree = async (path: string) => {
   if (!fs.existsSync(path)) {
     return;
   }
-  return await dfs(path);
+  return await dfs(path, path);
 };
