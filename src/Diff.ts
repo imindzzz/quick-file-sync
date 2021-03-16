@@ -3,10 +3,7 @@ interface DiffAction {
   action: "del";
   obj: FileDirHashTree;
 }
-export const diffArray = (
-  tree1: FileDirHashTree[],
-  tree2: FileDirHashTree[]
-) => {
+const diffArray = (tree1: FileDirHashTree[], tree2: FileDirHashTree[]) => {
   const actions: DiffAction[] = [];
   tree1.forEach((x) => {
     const y = tree2.find((y) => x.type === x.type && x.path === y.path);
