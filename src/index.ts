@@ -7,18 +7,31 @@ const testPathRoot = Path.join(process.cwd(), ".test");
 rmDir(testPathRoot);
 fs.mkdirSync(testPathRoot);
 
-buildFileDir({
-  type: "dir",
-  path: Path.join(testPathRoot, "local"),
-  hash: "",
-  children: [],
-});
-buildFileDir({
-  type: "dir",
-  path: Path.join(testPathRoot, "server"),
-  hash: "",
-  children: [],
-});
+buildFileDir(
+  {
+    type: "dir",
+    name: "local",
+    content: "",
+    children: [
+      { type: "file", name: "1.txt", content: "111", children: [] },
+      { type: "file", name: "2.txt", content: "222", children: [] },
+    ],
+  },
+  testPathRoot
+);
+buildFileDir(
+  {
+    type: "dir",
+    name: "server",
+    content: "",
+    children: [
+      { type: "file", name: "1.txt", content: "111", children: [] },
+      { type: "file", name: "3.txt", content: "333", children: [] },
+    ],
+  },
+  testPathRoot
+);
+rmDir(testPathRoot);
 
 // const run = async () => {
 //   const tree1 = await buildTree(Path.join(testPathRoot, "local"));

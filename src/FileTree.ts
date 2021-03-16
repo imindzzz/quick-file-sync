@@ -57,19 +57,25 @@ export const buildTree = async (path: string) => {
   return await dfs(path, path);
 };
 
+export interface FileDirBuildTree {
+  type: "dir" | "file";
+  name: string;
+  content: string;
+  children: FileDirBuildTree[];
+}
 /**
  * 根据数据结构生成真实的文件夹
  * @param path
  * @returns
  */
 export const buildFileDir = async (
-  tree: FileDirHashTree,
+  tree: FileDirBuildTree,
   parentPath?: string
 ) => {
   if (!tree) {
     return;
   }
-  const realPath = Path.join(tree.path, parentPath || "");
+  const realPath = Path.join(parentPath || "", tree.name);
   if (tree.type === "dir") {
     fs.mkdirSync(realPath);
     tree.children.forEach((child) => {
@@ -78,7 +84,7 @@ export const buildFileDir = async (
   }
 
   if (tree.type === "file") {
-    fs.writeFileSync(realPath, tree.hash);
+    fs.writeFileSync(realPath, tree.content);
   }
 };
 
