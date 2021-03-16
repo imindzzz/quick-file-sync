@@ -45,9 +45,58 @@ const dfs = async (path: string, oPath: string) => {
   return tree;
 };
 
+/**
+ * 扫描目录生成，生成数据结构
+ * @param path
+ * @returns
+ */
 export const buildTree = async (path: string) => {
   if (!fs.existsSync(path)) {
     return;
   }
   return await dfs(path, path);
+};
+
+/**
+ * 根据数据结构生成真实的文件夹
+ * @param path
+ * @returns
+ */
+export const buildFileDir = async (
+  tree: FileDirHashTree,
+  parentPath?: string
+) => {
+  if (!tree) {
+    return;
+  }
+  const realPath = Path.join(tree.path, parentPath || "");
+  if (tree.type === "dir") {
+    fs.mkdirSync(realPath);
+    tree.children.forEach((child) => {
+      buildFileDir(child, realPath);
+    });
+  }
+
+  if (tree.type === "file") {
+    fs.writeFileSync(realPath, tree.hash);
+  }
+};
+
+export const rmDir = (path: string) => {
+  if (fs.existsSync(path)) {
+    const stat = fs.statSync(path);
+    if (stat.isDirectory()) {
+      const dirs = fs.readdirSync(path);
+      if (dirs.length === 0) {
+        fs.rmdirSync(path);
+      } else {
+        dirs.forEach((dir) => {
+          rmDir(Path.join(path, dir));
+        });
+        fs.rmdirSync(path);
+      }
+    } else {
+      fs.rmSync(path);
+    }
+  }
 };
