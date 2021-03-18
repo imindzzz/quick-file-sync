@@ -15,13 +15,13 @@ const diffArray = (tree1: FileDirHashTree[], tree2: FileDirHashTree[]) => {
     } else {
       actions.push({
         action: "del",
-        obj: x,
+        obj: {
+          ...x,
+          children: [],
+        },
       });
     }
   });
-
-  // TODO 考虑tree2
-
   return actions;
 };
 
@@ -29,8 +29,7 @@ export const diffTree = (tree1: FileDirHashTree, tree2: FileDirHashTree) => {
   if (tree1.hash === tree2.hash) {
     return [];
   }
-  //   if (!tree1.children && !tree2.children) {
-  //     return [];
-  //   }
-  return diffArray(tree1.children || [], tree2.children || []);
+  const a = diffArray(tree1.children, tree2.children);
+  const b = diffArray(tree2.children, tree1.children);
+  return [...a, ...b];
 };

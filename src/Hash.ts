@@ -13,8 +13,6 @@ export const getFileHash = (path: string) => {
     const stream = fs.createReadStream(path);
     const fsHash = crypto.createHash("sha256");
 
-    fsHash.update(Path.parse(path).base); // 加上文件名，排除复制的文件
-
     stream.on("data", function (d) {
       fsHash.update(d);
     });
