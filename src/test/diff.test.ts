@@ -41,10 +41,10 @@ test("本地和服务端分别新增了文件", async () => {
   rmDir(testPathRoot);
 
   expect(diff.length).toBe(2);
-  expect(diff[0].action).toBe("del");
-  expect(diff[0].obj.path.endsWith("2.txt")).toBe(true);
-  expect(diff[1].action).toBe("del");
-  expect(diff[1].obj.path.endsWith("3.txt")).toBe(true);
+  expect(diff[0][0].action).toBe("del");
+  expect(diff[0][0].obj.path.endsWith("2.txt")).toBe(true);
+  expect(diff[1][0].action).toBe("del");
+  expect(diff[1][0].obj.path.endsWith("3.txt")).toBe(true);
 });
 
 test("本地新增了文件/服务器删除了文件", async () => {
@@ -81,9 +81,9 @@ test("本地新增了文件/服务器删除了文件", async () => {
 
   rmDir(testPathRoot);
 
-  expect(diff.length).toBe(1);
-  expect(diff[0].action).toBe("del");
-  expect(diff[0].obj.path.endsWith("2.txt")).toBe(true);
+  expect(diff.length).toBe(2);
+  expect(diff[0][0].action).toBe("del");
+  expect(diff[0][0].obj.path.endsWith("2.txt")).toBe(true);
 });
 
 test("服务器新增了文件/本地删除了文件", async () => {
@@ -120,7 +120,7 @@ test("服务器新增了文件/本地删除了文件", async () => {
 
   rmDir(testPathRoot);
 
-  expect(diff.length).toBe(1);
-  expect(diff[0].action).toBe("del");
-  expect(diff[0].obj.path.endsWith("2.txt")).toBe(true);
+  expect(diff.length).toBe(2);
+  expect(diff[1][0].action).toBe("del");
+  expect(diff[1][0].obj.path.endsWith("2.txt")).toBe(true);
 });
