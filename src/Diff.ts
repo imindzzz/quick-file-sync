@@ -1,6 +1,5 @@
 import { FileDirHashTree } from "./FileTree";
 interface DiffAction {
-  action: "del";
   obj: FileDirHashTree;
 }
 const diffArray = (tree1: FileDirHashTree[], tree2: FileDirHashTree[]) => {
@@ -9,13 +8,22 @@ const diffArray = (tree1: FileDirHashTree[], tree2: FileDirHashTree[]) => {
     const y = tree2.find((y) => x.type === x.type && x.path === y.path);
     if (y) {
       if (x.hash !== y.hash) {
-        const res = diffTree(x, y);
-        actions.push(...res[0], ...res[1]);
+        if (x.children.length !== 0 && y.children.length !== 0) {
+          const res = diffTree(x, y);
+          actions.push(...res[0]);
+        } else {
+          actions.push({
+            obj: {
+              ...x,
+              children: [],
+            },
+          });
+        }
       } else {
+        // 完全一致
       }
     } else {
       actions.push({
-        action: "del",
         obj: {
           ...x,
           children: [],
